@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<head>
+    <link href="vendors/bootstrap/bootstrap.min.css" rel="stylesheet">
+</head>
+<style>
+    .clr{
+        clear: both;
+    }
+    .form-control-no-border:focus {
+        border-color:#ccc;
+        outline: 0;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+    }
+    .btn-top {
+        height: 25px;
+        width: 25px;
+        padding: 0px;
+        float: right;
+    }
+    .btn-top:focus {
+        outline: 0;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+    }
+    .btn-action:focus {
+        border-color:#666;
+        outline: 0;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+    }
+    .btn-action:hover {
+        background-color: #2ECC71 !important;
+    }
+    .sp-box-heading{
+        color: #FFF;
+        background-color: #2C3E50;
+        border: 1px solid #2C3E50;
+        padding-left: 5px;
+        padding-right: 5px;
+        display: block;
+        margin-top: 10px;
+    }
+    .sp-domain-filters{
+        color: #8e44ad;
+        background-color: #CDACDA;
+        border: 1px solid #8E44AD;
+        border-radius: 4px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    .sp-replace-rule-search{
+        color: #c0392b;
+        background-color: #F3A59D;
+        border: 1px solid #C0392B;
+        border-radius: 4px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    .sp-replace-rule-replace{
+        color: #2980B9;
+        background-color: #99CBED;
+        border: 1px solid #2980B9;
+        border-radius: 4px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    .sp-delete {
+        color: #FFF;
+        background-color: red;
+        border: 1px solid red;
+        border-radius: 4px;
+        padding-left: 4px;
+        padding-right: 4px;
+        cursor: pointer;
+    }
+    .sp-error {
+        color: red;
+        padding-left: 10px;
+    }
+    .list-filters {
+        border-collapse: collapse;
+    }
+    .list-filters td, .list-filters th {
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-bottom: 5px;
+    }
+    .list-filters tr:nth-child(even) {
+        background-color: #F2F2F2;
+    }
+    .list-filters tr:hover {
+        background-color: #ddd;
+    }
+    .col-span {
+        width: 100%;
+    }
+</style>
+<body>
+    <div id="div-top">
+        <div style="background-color:#2ECC71;padding:10px;margin-top:5px;margin-bottom:6px;">
+            <span style="color:white;"><b>XIMGDOWN : </b></span><span style="color:white;">Total Images (<span id="sp-link-count">0</span>)</span>
+            <button class="btn btn-sm btn-primary btn-top" id="btn-download" title="Download Selected Images"><img src="images/img-download.png" alt="" style="height:20px;width:20px;padding:0px;"></button>
+            <button class="btn btn-sm btn-primary btn-top" id="btn-search" title="Search for Images" style="margin-right:5px;"><img src="images/img-search.png" alt="" style="height:20px;width:20px;padding:4px;"></button>
+        </div>
+        <hr style="padding:0px;margin:0px;">
+        <div id="div-links" style="height:200px;width:600px;background-color:#ecf0f1;padding-left:10px;padding-right:10px;overflow:scroll;">
+            <table id="table-links"></table>
+        </div>
+        <hr style="padding:0px;margin:0px;">
+    </div>
+    <div style="padding:10px;">
+        <input type="checkbox" id="cb-toggle-all" checked>
+        <label for="cb-toggle-all"><small>SELECT ALL  </small></label>
+        <div>
+            <input type="checkbox" id="cb-toggle-extensions">
+            <label for="cb-toggle-extensions"><small>*.JPG,*.JPEG,*.PNG</small></label>
+            &nbsp|&nbsp
+            <input type="checkbox" id="cb-toggle-domain-filters">
+            <label for="cb-toggle-domain-filters"><small>Domain Filters (<span id="sp-domain-filters-count">0</span>)</small></label>
+            &nbsp|&nbsp
+            <input type="checkbox" id="cb-toggle-replace-rules">
+            <label for="cb-toggle-replace-rules"><small>URL Replace Rules (<span id="sp-replace-rules-count">0</span>)</small></label>
+            <button class="btn btn-sm btn-outline-secondary btn-action" id="btn-toggle-advance" title="Toggle Advance Settings" style="float:right;">Adv.</button>
+            <div class="clr"></div>
+        </div>
+        <div id="div-advance-settings" style="display:none;">
+            <small class="sp-box-heading">Domain Filters</small>
+            <div class="input-group mb-3" style="margin-bottom:0px !important;margin-top:5px;">
+                <input type="text" class="form-control form-control-sm form-control-no-border" id="inp-domain-filters" placeholder="Domain Filter eg. https://flickr.com/,https://photobucket.com/" style="margin-top:0px;">
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-action" id="btn-add-domain-filter">ADD</button>
+                </div>
+            </div>
+            <small class="sp-error" id="sp-error-domain-filters" style="display:none;">Please enter domain to continue...</small>
+            <table class="list-filters" id="table-domain-filters"></table>
+            <small class="sp-box-heading">Search Rules</small>
+            <div class="input-group mb-3" style="margin-bottom:0px !important;margin-top:5px;">
+                <input type="text" class="form-control form-control-sm form-control-no-border" id="inp-search" placeholder="Search eg. /t/" style="margin-top:0px;">
+                <input type="text" class="form-control form-control-sm form-control-no-border" id="inp-replace" placeholder="Replace eg. /i/" style="margin-top:0px;">
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-action" id="btn-add-replace-rule">ADD</button>
+                </div>
+            </div>
+            <small class="sp-error" id="sp-error-replace-rules" style="display:none;">Please enter search & replace words to continue...</small>
+            <table class="list-filters" id="table-replace-rules"></table>
+        </div>
+    </div>
+    
+    <script src="vendors/jquery/jquery-3.3.1.min.js"></script>
+    <script src="vendors/bootstrap/bootstrap.min.js"></script>
+    <script src='scripts/index.js'></script>
+</body>
+
+</html>
