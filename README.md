@@ -9,3 +9,7 @@ Filters:
 
 Find-Replace:
   * You can use this feature to replace anything in url result.
+
+----------------------------------------------------------------------------------------------------
+This source code is licensed under GNU General Public License (GPL)
+----------------------------------------------------------------------------------------------------
